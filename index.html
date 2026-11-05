@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Library Management System | Oracle PL/SQL Application</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="app-wrapper">
+
+  <!-- ========================================================================
+       SIDEBAR NAVIGATION
+       ======================================================================== -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-icon">
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+        </svg>
+      </div>
+      <div>
+        <div class="brand-title">Library OS</div>
+        <div class="brand-subtitle">Oracle PL/SQL System</div>
+      </div>
+    </div>
+
+    <ul class="sidebar-menu">
+      <li class="menu-category">Main Workspace</li>
+      <li class="nav-item">
+        <a class="nav-link active" data-tab="tabDashboard">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+          Dashboard
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-tab="tabBooks">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+          Books Catalog
+          <span class="nav-badge" id="badgeBooksCount">0</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-tab="tabMembers">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          Members Directory
+          <span class="nav-badge" id="badgeMembersCount">0</span>
+        </a>
+      </li>
+
+      <li class="menu-category">PL/SQL Operations</li>
+      <li class="nav-item">
+        <a class="nav-link" data-tab="tabIssue">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg>
+          Issue Book
+          <span class="nav-badge" id="badgeLoansCount">0</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-tab="tabReturn">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 14 4 9 9 4"></polyline><path d="M20 20v-7a4 4 0 0 0-4-4H4"></path></svg>
+          Return & Fines
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-tab="tabHistory">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          Member History
+        </a>
+      </li>
+
+      <li class="menu-category">Database & Audit</li>
+      <li class="nav-item">
+        <a class="nav-link" data-tab="tabDatabase">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+          DB Inspector & Tables
+        </a>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <div class="engine-status-card">
+        <div class="status-indicator">
+          <span class="dot-pulse"></span>
+          Oracle PL/SQL Active
+        </div>
+        <div class="engine-desc">
+          Automated Triggers, Sequences, Procedures & Function Engine
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ========================================================================
+       MAIN APP CONTENT
+       ======================================================================== -->
+  <main class="main-content">
+    
+    <!-- Top Header -->
+    <header class="top-header">
+      <div class="header-left">
+        <button class="mobile-toggle" id="mobileMenuToggle" aria-label="Toggle Navigation">
+          <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+        <div class="page-title-box">
+          <h1 id="pageHeaderTitle">Dashboard Overview</h1>
+          <p id="pageHeaderSub">Real-time library statistics, recent transactions, and system health.</p>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <button class="header-btn" id="themeToggleBtn" title="Toggle Dark/Light Mode">🌙 Dark</button>
+        <button class="header-btn" id="btnResetDatabase" title="Reset DB to 01_schema_and_data.sql seeds">↺ Reset DB</button>
+        <button class="header-btn btn-primary" data-modal-open="modalAddBook">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          Add Book
+        </button>
+      </div>
+    </header>
+
+    <!-- Page Body Container -->
+    <div class="page-container">
+
+      <!-- ====================================================================
+           TAB 1: DASHBOARD
+           ==================================================================== -->
+      <section class="tab-pane active" id="tabDashboard">
+        
+        <!-- KPI Metrics Grid -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-info">
+              <h3>Total Books</h3>
+              <div class="stat-value" id="statTotalBooks">0</div>
+              <div class="stat-subtext"><span id="statAvailableBooks">0</span> available / <span id="statBorrowedBooks">0</span> borrowed</div>
+            </div>
+            <div class="stat-icon indigo">
+              <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-info">
+              <h3>Registered Members</h3>
+              <div class="stat-value" id="statActiveMembers">0</div>
+              <div class="stat-subtext"><span id="statSuspendedMembers">0</span> suspended members</div>
+            </div>
+            <div class="stat-icon emerald">
+              <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-info">
+              <h3>Active Loans</h3>
+              <div class="stat-value" id="statActiveLoans">0</div>
+              <div class="stat-subtext"><strong style="color:var(--danger);" id="statOverdueLoans">0</strong> currently overdue</div>
+            </div>
+            <div class="stat-icon amber">
+              <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-info">
+              <h3>Assessed Fines</h3>
+              <div class="stat-value" id="statTotalFines">$0.00</div>
+              <div class="stat-subtext"><span id="statPendingFines">$0.00</span> pending payment</div>
+            </div>
+            <div class="stat-icon rose">
+              <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Action Hero Banner -->
+        <div class="action-banner">
+          <div>
+            <h2>Automated Library Workflow Center</h2>
+            <p>Triggers automatically sync book inventory states. Automated procedures enforce member active status and calculate $2.00/day overdue penalties.</p>
+          </div>
+          <div class="action-buttons">
+            <button class="btn-banner" data-switch-tab="tabIssue">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg>
+              Issue Book
+            </button>
+            <button class="btn-banner btn-banner-outline" data-switch-tab="tabReturn">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 14 4 9 9 4"></polyline><path d="M20 20v-7a4 4 0 0 0-4-4H4"></path></svg>
+              Return Book
+            </button>
+            <button class="btn-banner btn-banner-outline" data-modal-open="modalAddMember">
+              + New Member
+            </button>
+          </div>
+        </div>
+
+        <!-- Dashboard Layout Grid -->
+        <div class="dashboard-grid">
+          <!-- Recent Loans Table -->
+          <div class="content-card">
+            <div class="card-header">
+              <div class="card-title">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                Recent Loan Transactions
+              </div>
+              <button class="header-btn" style="padding:4px 10px; font-size:0.75rem;" data-switch-tab="tabIssue">View All Loans</button>
+            </div>
+            <div class="card-body" style="padding:0;">
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Loan ID</th>
+                      <th>Book</th>
+                      <th>Member</th>
+                      <th>Issue Date</th>
+                      <th>Due Date</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recentLoansTableBody">
+                    <!-- Dynamic -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- PL/SQL Architecture Status Box -->
+          <div class="content-card">
+            <div class="card-header">
+              <div class="card-title">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+                PL/SQL Schema Rules
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="plsql-hint-box" style="margin-bottom:12px;">
+                <strong>Trigger:</strong> <code class="plsql-code-badge">trg_sync_book_availability</code><br>
+                <span>Automatically flips book to <strong>BORROWED</strong> on loan issue, and back to <strong>AVAILABLE</strong> on return.</span>
+              </div>
+              <div class="plsql-hint-box" style="margin-bottom:12px;">
+                <strong>Function:</strong> <code class="plsql-code-badge">calculate_fine()</code><br>
+                <span>Computes $2.00/day overdue. Returns $0.00 for on-time returns.</span>
+              </div>
+              <div class="plsql-hint-box" style="margin-bottom:0;">
+                <strong>Constraints:</strong><br>
+                <span>• Suspended members are blocked from borrowing.<br>• Double-borrowing prohibited.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ====================================================================
+           TAB 2: BOOKS INVENTORY
+           ==================================================================== -->
+      <section class="tab-pane" id="tabBooks">
+        <div class="content-card">
+          <div class="card-header">
+            <div class="card-title">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+              Books Table (<code class="plsql-code-badge">BOOKS</code>)
+            </div>
+            <button class="header-btn btn-primary" data-modal-open="modalAddBook">+ Add New Book</button>
+          </div>
+          <div class="card-body">
+            
+            <div class="filter-bar">
+              <div class="search-box">
+                <svg class="search-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="bookSearchInput" placeholder="Search by title, author, or ID...">
+              </div>
+              <select class="select-filter" id="bookCategoryFilter">
+                <option value="ALL">All Categories</option>
+              </select>
+              <select class="select-filter" id="bookStatusFilter">
+                <option value="ALL">All Statuses</option>
+                <option value="AVAILABLE">AVAILABLE</option>
+                <option value="BORROWED">BORROWED</option>
+              </select>
+            </div>
+
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Book ID</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="booksTableBody">
+                  <!-- Dynamic -->
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           TAB 3: MEMBERS DIRECTORY
+           ==================================================================== -->
+      <section class="tab-pane" id="tabMembers">
+        <div class="content-card">
+          <div class="card-header">
+            <div class="card-title">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+              Members Table (<code class="plsql-code-badge">MEMBERS</code>)
+            </div>
+            <button class="header-btn btn-primary" data-modal-open="modalAddMember">+ Add New Member</button>
+          </div>
+          <div class="card-body">
+            
+            <div class="filter-bar">
+              <div class="search-box">
+                <svg class="search-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" id="memberSearchInput" placeholder="Search by name, email, phone, or ID...">
+              </div>
+              <select class="select-filter" id="memberStatusFilter">
+                <option value="ALL">All Statuses</option>
+                <option value="ACTIVE">ACTIVE</option>
+                <option value="SUSPENDED">SUSPENDED</option>
+              </select>
+            </div>
+
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Member ID</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Join Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="membersTableBody">
+                  <!-- Dynamic -->
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           TAB 4: ISSUE BOOK PROCEDURE
+           ==================================================================== -->
+      <section class="tab-pane" id="tabIssue">
+        <div style="max-width: 760px; margin: 0 auto;">
+          <div class="content-card">
+            <div class="card-header">
+              <div class="card-title">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></svg>
+                PL/SQL Procedure: <code class="plsql-code-badge">issue_book(p_book_id, p_member_id, p_loan_days)</code>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="plsql-hint-box">
+                <strong>Business Rule Validations:</strong><br>
+                1. Member must exist in <code class="plsql-code-badge">MEMBERS</code> table.<br>
+                2. Member must NOT have status <code class="plsql-code-badge">'SUSPENDED'</code> (Try Member #4 Diana Prince to test exception handling).<br>
+                3. Book must exist and its status must be <code class="plsql-code-badge">'AVAILABLE'</code>.<br>
+                4. Upon successful issue, <code class="plsql-code-badge">trg_sync_book_availability</code> updates book status to <code class="plsql-code-badge">'BORROWED'</code> automatically.
+              </div>
+
+              <form id="issueBookForm">
+                <div class="form-group">
+                  <label class="form-label" for="issueBookSelect">Select Book to Issue *</label>
+                  <select class="form-select" id="issueBookSelect" required>
+                    <!-- Dynamic -->
+                  </select>
+                  <div class="form-help">Only books with AVAILABLE status can be issued.</div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="issueMemberSelect">Select Member *</label>
+                  <select class="form-select" id="issueMemberSelect" required>
+                    <!-- Dynamic -->
+                  </select>
+                  <div class="form-help">Suspended members will trigger PL/SQL exception: <code>ex_member_suspended</code>.</div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="issueLoanDays">Loan Duration (Days)</label>
+                  <input type="number" class="form-input" id="issueLoanDays" value="14" min="1" max="90" required>
+                  <div class="form-help">Default duration is 14 days from today.</div>
+                </div>
+
+                <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:24px;">
+                  <button type="submit" class="header-btn btn-primary" style="padding:10px 24px; font-size:0.95rem;">
+                    Execute issue_book Procedure
+                  </button>
+                </div>
+              </form>
+
+              <!-- Success Receipt -->
+              <div id="issueReceiptBox" style="display:none;" class="receipt-box">
+                <div style="font-weight:700; color:var(--success); margin-bottom:8px;">✓ DBMS_OUTPUT: PROCEDURE EXECUTION SUCCESSFUL</div>
+                <pre id="issueReceiptOutput" style="white-space:pre-wrap; margin:0;"></pre>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           TAB 5: RETURN BOOK PROCEDURE & FINES
+           ==================================================================== -->
+      <section class="tab-pane" id="tabReturn">
+        <div style="max-width: 900px; margin: 0 auto; display:flex; flex-direction:column; gap:24px;">
+          
+          <div class="content-card">
+            <div class="card-header">
+              <div class="card-title">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="9 14 4 9 9 4"></polyline><path d="M20 20v-7a4 4 0 0 0-4-4H4"></path></svg>
+                PL/SQL Procedure: <code class="plsql-code-badge">return_book(p_loan_id, p_return_date)</code>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="plsql-hint-box">
+                <strong>Automation & Penalty Engine:</strong><br>
+                1. Calls <code class="plsql-code-badge">calculate_fine()</code> to determine overdue days @ $2.00/day.<br>
+                2. If fine &gt; 0, automatically creates a record in <code class="plsql-code-badge">FINES</code> table with status <code class="plsql-code-badge">'PENDING'</code>.<br>
+                3. Trigger <code class="plsql-code-badge">trg_sync_book_availability</code> marks book status back to <code class="plsql-code-badge">'AVAILABLE'</code>.<br>
+                <em>Tip: Try returning Loan #1001 (already 6 days overdue) to test penalty calculation!</em>
+              </div>
+
+              <form id="returnBookForm">
+                <div class="form-group">
+                  <label class="form-label" for="returnLoanSelect">Select Active Loan to Return *</label>
+                  <select class="form-select" id="returnLoanSelect" required>
+                    <!-- Dynamic -->
+                  </select>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label" for="returnDatePicker">Return Date *</label>
+                    <input type="date" class="form-input" id="returnDatePicker" required>
+                    <div class="form-help">Select custom return date to simulate overdue returns.</div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Real-Time Fine Assessment Preview</label>
+                    <div id="returnFinePreview" style="padding:10px 14px; background:var(--bg-main); border:1px solid var(--border-color); border-radius:var(--radius-md); font-size:0.88rem; min-height:42px; display:flex; align-items:center;">
+                      Select a loan to preview calculated fine
+                    </div>
+                  </div>
+                </div>
+
+                <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:20px;">
+                  <button type="submit" class="header-btn btn-primary" style="padding:10px 24px; font-size:0.95rem;">
+                    Execute return_book Procedure
+                  </button>
+                </div>
+              </form>
+
+              <!-- Return Receipt -->
+              <div id="returnReceiptBox" style="display:none;" class="receipt-box">
+                <div style="font-weight:700; color:var(--success); margin-bottom:8px;">✓ DBMS_OUTPUT: RETURN RECEIPT & TRANSACTION LOG</div>
+                <pre id="returnReceiptOutput" style="white-space:pre-wrap; margin:0;"></pre>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Fines Management Table -->
+          <div class="content-card">
+            <div class="card-header">
+              <div class="card-title">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                Fines & Audit Log (<code class="plsql-code-badge">FINES</code>)
+              </div>
+            </div>
+            <div class="card-body" style="padding:0;">
+              <div class="table-responsive">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Fine ID</th>
+                      <th>Loan ID</th>
+                      <th>Borrower</th>
+                      <th>Fine Amount</th>
+                      <th>Assessment Date</th>
+                      <th>Payment Status</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="finesTableBody">
+                    <!-- Dynamic -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           TAB 6: MEMBER BORROWING HISTORY
+           ==================================================================== -->
+      <section class="tab-pane" id="tabHistory">
+        <div style="max-width: 960px; margin: 0 auto; display:flex; flex-direction:column; gap:24px;">
+          
+          <div class="content-card">
+            <div class="card-header">
+              <div class="card-title">
+                <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                PL/SQL Cursor Procedure: <code class="plsql-code-badge">display_member_history(p_member_id)</code>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="form-group">
+                <label class="form-label" for="historyMemberSelect">Select Member to Query History</label>
+                <select class="form-select" id="historyMemberSelect">
+                  <!-- Dynamic -->
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dynamic Result Container -->
+          <div id="memberHistoryResultContainer" style="display:none;">
+            
+            <!-- Member Overview Strip -->
+            <div class="content-card" style="margin-bottom:20px;">
+              <div class="card-body" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+                <div>
+                  <h3 id="histMemberName" style="font-size:1.15rem; font-weight:700;">Member Name</h3>
+                  <div style="font-size:0.85rem; color:var(--text-muted); margin-top:2px;">
+                    Email: <span id="histMemberEmail"></span> | Status: <span id="histMemberStatus"></span>
+                  </div>
+                </div>
+                <div>
+                  <span style="font-size:0.85rem; color:var(--text-muted);">Total Borrowings:</span>
+                  <span id="histMemberTotalLoans" style="font-size:1.4rem; font-weight:700; margin-left:6px; color:var(--primary);">0</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tabular View -->
+            <div class="content-card" style="margin-bottom:20px;">
+              <div class="card-header">
+                <div class="card-title">Detailed Loan Records (Interactive Join Query)</div>
+              </div>
+              <div class="card-body" style="padding:0;">
+                <div class="table-responsive">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Loan ID</th>
+                        <th>Book Title</th>
+                        <th>Issue Date</th>
+                        <th>Due Date</th>
+                        <th>Return Date</th>
+                        <th>Loan Status</th>
+                        <th>Fine Status</th>
+                      </tr>
+                    </thead>
+                    <tbody id="histTableBody">
+                      <!-- Dynamic -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- SQL*Plus ASCII Terminal Replica -->
+            <div class="content-card">
+              <div class="card-header">
+                <div class="card-title">
+                  <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+                  SQL*Plus DBMS_OUTPUT Terminal Emulation
+                </div>
+              </div>
+              <div class="card-body" style="padding: 16px;">
+                <div class="ascii-terminal" id="histAsciiOutput">
+                  <!-- Dynamic ASCII Table -->
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           TAB 7: ORACLE DB INSPECTOR
+           ==================================================================== -->
+      <section class="tab-pane" id="tabDatabase">
+        <div class="content-card">
+          <div class="card-header">
+            <div class="card-title">
+              <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
+              Live In-Memory Oracle Database State (JSON / Relational Snapshot)
+            </div>
+            <button class="header-btn" onclick="navigator.clipboard.writeText(document.getElementById('rawDbJsonOutput').textContent); showToast('Copied', 'Database JSON copied to clipboard!', 'info');">
+              Copy JSON
+            </button>
+          </div>
+          <div class="card-body">
+            <div class="plsql-hint-box">
+              Shows all in-memory tables (<code class="plsql-code-badge">BOOKS</code>, <code class="plsql-code-badge">MEMBERS</code>, <code class="plsql-code-badge">LOANS</code>, <code class="plsql-code-badge">FINES</code>) and sequence next values (<code class="plsql-code-badge">book_seq</code>, <code class="plsql-code-badge">member_seq</code>, etc.).
+            </div>
+            <pre id="rawDbJsonOutput" class="ascii-terminal" style="color:#a5f3fc; max-height: 480px;"></pre>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ======================================================================
+         PERSISTENT BOTTOM CONSOLE DOCK (DBMS_OUTPUT LOGS)
+         ====================================================================== -->
+    <div class="console-dock collapsed" id="consoleDock">
+      <div class="console-header" id="consoleDockHeader">
+        <div class="console-title">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="4 17 10 11 4 5"></polyline><line x1="12" y1="19" x2="20" y2="19"></line></svg>
+          Oracle DBMS_OUTPUT Console &amp; Trigger Audit Log
+        </div>
+        <div class="console-actions">
+          <button class="console-btn" id="btnClearConsole" title="Clear Console Log">Clear</button>
+          <span style="font-size:0.75rem; color:#64748b;" id="consoleToggleIcon">▲ Expand</span>
+        </div>
+      </div>
+      <div class="console-body" id="consoleLogBody">
+        <!-- Log entries stream -->
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ========================================================================
+     MODALS
+     ======================================================================== -->
+
+<!-- Modal: Add Book -->
+<div class="modal-backdrop" id="modalAddBook">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h3 class="modal-title">Add New Book (book_seq.NEXTVAL)</h3>
+      <button class="modal-close" data-modal-close aria-label="Close">&times;</button>
+    </div>
+    <form id="addBookForm">
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label" for="newBookTitle">Book Title *</label>
+          <input type="text" class="form-input" id="newBookTitle" placeholder="e.g. Operating System Concepts" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="newBookAuthor">Author *</label>
+          <input type="text" class="form-input" id="newBookAuthor" placeholder="e.g. Peter B. Galvin" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="newBookCategory">Category *</label>
+          <input type="text" class="form-input" id="newBookCategory" placeholder="e.g. Computer Science, Mathematics" required>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="header-btn" data-modal-close>Cancel</button>
+        <button type="submit" class="header-btn btn-primary">Save Book</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal: Add Member -->
+<div class="modal-backdrop" id="modalAddMember">
+  <div class="modal-dialog">
+    <div class="modal-header">
+      <h3 class="modal-title">Register Member (member_seq.NEXTVAL)</h3>
+      <button class="modal-close" data-modal-close aria-label="Close">&times;</button>
+    </div>
+    <form id="addMemberForm">
+      <div class="modal-body">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="newMemberFirst">First Name *</label>
+            <input type="text" class="form-input" id="newMemberFirst" placeholder="Jane" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="newMemberLast">Last Name *</label>
+            <input type="text" class="form-input" id="newMemberLast" placeholder="Doe" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="newMemberEmail">Email Address (Unique) *</label>
+          <input type="email" class="form-input" id="newMemberEmail" placeholder="jane.doe@university.edu" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="newMemberPhone">Phone Number</label>
+          <input type="text" class="form-input" id="newMemberPhone" placeholder="555-0199">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="header-btn" data-modal-close>Cancel</button>
+        <button type="submit" class="header-btn btn-primary">Register Member</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Application Script -->
+<script src="app.js"></script>
+</body>
+</html>
+
